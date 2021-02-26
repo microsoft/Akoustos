@@ -1,4 +1,5 @@
 # Akoustos
+![header image](Akoustos.JPG)
 
 As the maintainer of this project, please make a few updates:
 
