@@ -1,10 +1,17 @@
 ![header image](Akoustos.JPG)
 
-# Akoustos - automated analysis platform for acoustics
+# Akoustos - Automated Bioacoustics Analysis Platform
+
 
 ## Project Description
 
-## Collaborators
+With the goal of building an automated bioacoustics analysis platform, we hope it will:
+1. enable us to help broader audience in acoustics community working on problems that can be solved by similar methods;
+2. help conservation organizations and ecology practitioners to process audio recordings by detecting species presence more efficiently and more consistently with state-of-the-art machine learning techniques.
+
+
+## Collaborators & Contributors
+
 
 ## Resources & Links
 
