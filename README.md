@@ -9,9 +9,13 @@ With the goal of building an automated bioacoustics analysis platform, we hope i
 1. enable us to help broader audience in acoustics community working on problems that can be solved by similar methods;
 2. help conservation organizations and ecology practitioners to process audio recordings by detecting species presence more efficiently and more consistently with state-of-the-art machine learning techniques.
 
+The near-term plan is to focus on automated sound detection and species classification tasks, using either binary, multi-class, or multi-label multi-class models. 
+
+
 
 ## Collaborators & Contributors
-
+1. Nowacek Acoustics and Engineering Lab from Duke University
+2. Lab of Onirth
 
 ## Resources & Links
 
