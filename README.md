@@ -21,8 +21,21 @@ The near-term plan is to focus on automated sound detection and species classifi
 5. [Rainforest Connection](https://www.rfcx.org/)
 6. [AviaNZ](https://www.avianz.net/)
 7. [ORCASOUND](https://www.orcasound.net/portfolio/bush-point-hydrophone/)
+8. [Vulcan](https://vulcan.com/)
+... and more
 
 ## Resources & Links
+Relevant bioacoustics platforms & packages
+1. [Ketos](https://docs.meridian.cs.dal.ca/ketos/)
+2. [AviaNZ](https://www.avianz.net/index.php)
+3. [Arbimon](https://arbimon.rfcx.org/)
+4. [Raven](https://ravensoundsoftware.com/)
+5. [Pamguard](https://www.pamguard.org/)
+6. [EarthHz](https://data.songsofadaptation.org/)
+7. [OpenSoundscape](http://opensoundscape.org/en/latest/)
+8. [Ishmael](http://bioacoustics.us/ishmael.html)
+9. [BTO Acoustic Pipeline](https://www.ctbto.org/specials/vdec/)
+... and more
 
 ## Contributing
 
