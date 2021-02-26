@@ -1,6 +1,6 @@
 ![header image](Akoustos.JPG)
 
-# Akoustos
+# Akoustos - automated analysis platform for acoustics
 
 ## Project Description
 
