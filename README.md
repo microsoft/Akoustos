@@ -15,7 +15,12 @@ The near-term plan is to focus on automated sound detection and species classifi
 
 ## Collaborators & Contributors
 1. [Nowacek Acoustics and Engineering Lab](https://sites.nicholas.duke.edu/nowacek/) from Duke University
-2. Lab of Onirth
+2. [Conservation X Lab](https://conservationxlabs.com/)
+3. [Center for Conservation Bioacoustics](https://www.birds.cornell.edu/ccb/) from Cornell University
+4. [Meridian](https://meridian.cs.dal.ca/)
+5. [Rainforest Connection](https://www.rfcx.org/)
+6. [AviaNZ](https://www.avianz.net/)
+7. [ORCASOUND](https://www.orcasound.net/portfolio/bush-point-hydrophone/)
 
 ## Resources & Links
 
