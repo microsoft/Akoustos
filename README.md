@@ -14,7 +14,7 @@ The near-term plan is to focus on automated sound detection and species classifi
 
 
 ## Collaborators & Contributors
-1. Nowacek Acoustics and Engineering Lab from Duke University
+1. [Nowacek Acoustics and Engineering Lab](https://sites.nicholas.duke.edu/nowacek/) from Duke University
 2. Lab of Onirth
 
 ## Resources & Links
