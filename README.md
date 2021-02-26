@@ -22,6 +22,7 @@ The near-term plan is to focus on automated sound detection and species classifi
 6. [AviaNZ](https://www.avianz.net/)
 7. [ORCASOUND](https://www.orcasound.net/portfolio/bush-point-hydrophone/)
 8. [Vulcan](https://vulcan.com/)
+
 ... and more
 
 ## Resources & Links
@@ -35,6 +36,7 @@ Relevant bioacoustics platforms & packages
 7. [OpenSoundscape](http://opensoundscape.org/en/latest/)
 8. [Ishmael](http://bioacoustics.us/ishmael.html)
 9. [BTO Acoustic Pipeline](https://www.ctbto.org/specials/vdec/)
+
 ... and more
 
 ## Contributing
