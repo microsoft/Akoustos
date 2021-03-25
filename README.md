@@ -22,7 +22,7 @@ The near-term plan is to focus on automated sound detection and species classifi
 6. [AviaNZ](https://www.avianz.net/)
 7. [ORCASOUND](https://www.orcasound.net/portfolio/bush-point-hydrophone/)
 8. [Vulcan](https://vulcan.com/)
-9. NOAA(https://www.noaa.gov/)
+9. [NOAA](https://www.noaa.gov/)
 
 ... and more
 
