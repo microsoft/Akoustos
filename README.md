@@ -20,7 +20,7 @@ The near-term plan is to focus on automated sound detection and species classifi
 4. [Meridian](https://meridian.cs.dal.ca/)
 5. [Rainforest Connection](https://www.rfcx.org/)
 6. [AviaNZ](https://www.avianz.net/)
-7. [ORCASOUND](https://www.orcasound.net/portfolio/bush-point-hydrophone/)
+7. [Orcasound](http://www.orcasound.net/portfolio/ai-for-orcas-open-bioacoustic-data-science/)
 8. [Vulcan](https://vulcan.com/)
 9. [NOAA](https://www.noaa.gov/)
 
