@@ -17,26 +17,28 @@ The near-term plan is to focus on automated sound detection and species classifi
 1. [Nowacek Acoustics and Engineering Lab](https://sites.nicholas.duke.edu/nowacek/) from Duke University
 2. [Conservation X Lab](https://conservationxlabs.com/)
 3. [Center for Conservation Bioacoustics](https://www.birds.cornell.edu/ccb/) from Cornell University
-4. [Meridian](https://meridian.cs.dal.ca/)
-5. [Rainforest Connection](https://www.rfcx.org/)
-6. [AviaNZ](https://www.avianz.net/)
-7. [Orcasound](http://www.orcasound.net/portfolio/ai-for-orcas-open-bioacoustic-data-science/)
-8. [Vulcan](https://vulcan.com/)
-9. [NOAA](https://www.noaa.gov/)
+4. [Kitzes Lab](https://www.kitzeslab.org/) from University of Pittsburgh
+5. [Meridian](https://meridian.cs.dal.ca/)
+6. [Rainforest Connection](https://www.rfcx.org/)
+7. [AviaNZ](https://www.avianz.net/)
+8. [Orcasound](http://www.orcasound.net/portfolio/ai-for-orcas-open-bioacoustic-data-science/)
+9. [Vulcan](https://vulcan.com/)
+10. [NOAA](https://www.noaa.gov/)
 
 ... and more
 
 ## Resources & Links
 Relevant bioacoustics platforms & packages
-1. [Ketos](https://docs.meridian.cs.dal.ca/ketos/)
-2. [AviaNZ](https://www.avianz.net/index.php)
-3. [Arbimon](https://arbimon.rfcx.org/)
-4. [Raven](https://ravensoundsoftware.com/)
-5. [Pamguard](https://www.pamguard.org/)
-6. [EarthHz](https://data.songsofadaptation.org/)
-7. [OpenSoundscape](http://opensoundscape.org/en/latest/)
-8. [Ishmael](http://bioacoustics.us/ishmael.html)
-9. [BTO Acoustic Pipeline](https://www.ctbto.org/specials/vdec/)
+1. [OpenSoundscape](http://opensoundscape.org/en/latest/index.html)
+2. [Ketos](https://docs.meridian.cs.dal.ca/ketos/)
+3. [AviaNZ](https://www.avianz.net/index.php)
+4. [Arbimon](https://arbimon.rfcx.org/)
+5. [Raven](https://ravensoundsoftware.com/)
+6. [Pamguard](https://www.pamguard.org/)
+7. [EarthHz](https://data.songsofadaptation.org/)
+8. [OpenSoundscape](http://opensoundscape.org/en/latest/)
+9. [Ishmael](http://bioacoustics.us/ishmael.html)
+10. [BTO Acoustic Pipeline](https://www.ctbto.org/specials/vdec/)
 
 ... and more
 
