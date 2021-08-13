@@ -85,27 +85,21 @@ class Audio:
         return len(self.samples) / self.sample_rate
 
 
-    def generate_spectrogram(self, axis=False, filename=None, melspectrogram = False, cmap = 'viridis'):
+    def generate_spectrogram(self, axis=False, filename=None, sr = 22050, hop_length=512, fmin=None, fmax=None, x_axis='time', y_axis='linear', cmap = 'viridis'):
+        # reference: https://librosa.org/doc/main/generated/librosa.display.specshow.html
+        # colormap: https://matplotlib.org/stable/tutorials/colors/colormaps.html
         fig, ax = plt.subplots()
         if axis == False:
             plt.axis('off')
         
-        if melspectrogram == False:
-            D = librosa.stft(self.samples)  # STFT of y
-            S_dB = librosa.amplitude_to_db(np.abs(D), ref=np.max)
-            img = librosa.display.specshow(S_dB, x_axis='time', y_axis='linear', sr=self.sample_rate, ax=ax, cmap = cmap)
+        D = librosa.amplitude_to_db(np.abs(librosa.stft(self.samples)), ref=np.max)
+        img = librosa.display.specshow(D, x_axis=x_axis, y_axis=y_axis, sr=sr, hop_length=hop_length, fmin=fmin, fmax=fmax, ax=ax, cmap = cmap)
   
-        elif melspectrogram == True:
-            S = librosa.feature.melspectrogram(y=self.samples, sr=self.sample_rate, n_mels=128)
-            S_dB = librosa.power_to_db(S, ref=np.max)
-            img = librosa.display.specshow(S_dB, x_axis='time', y_axis='mel', sr=self.sample_rate, ax=ax, cmap = cmap)
-            
         if filename:
             image_path = Path(filename)
             fig.savefig(image_path)
             plt.close()   
 
-        
 
     
     
