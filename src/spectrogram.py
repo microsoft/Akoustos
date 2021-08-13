@@ -5,15 +5,15 @@
 from datetime import datetime
 from scipy import signal
 import numpy as np
+import pandas as pd
 import os
-from math import floor
+from math import floor, ceil
 from joblib import Parallel, delayed
 import multiprocessing
 import glob
-
+import random
 
 from src.audio import Audio
-
 
 class Spectrogram:
     
@@ -74,6 +74,10 @@ class Spectrogram:
         if not set(labeled_data['Begin File']).intersection(set(audio_filenames_base)):
             raise Exception("No matching audio files.")
         
+        num_detections = labeled_data.shape[0]
+        num_categories = len(labeled_data.Category.unique())
+        avg_detections_per_category = num_detections // num_categories
+        
         
         def generate_single_spectrogram(spectrogram_duration, row, save_to_dir):
             annotation_base_audio_filename = row['Begin File']
@@ -94,14 +98,14 @@ class Spectrogram:
                 audio_trim = audio.trim(start_time = spectrogram_start_time, end_time = spectrogram_end_time)
                 audio_trim.generate_spectrogram(axis = axis, melspectrogram = melspectrogram, cmap = cmap, 
                                                 filename = save_to_dir + '_'.join([str(x) for x in [annotation_base_audio_filename,spectrogram_start_time, spectrogram_end_time, category]]) + '.png')
-        
-        
+
         def generate_spectrograms_by_row(row):
             annotation_base_audio_filename = row['Begin File']
             try:
                 return generate_single_spectrogram(spectrogram_duration, row, save_to_dir)
             except:
                 pass
+            
         num_cores = multiprocessing.cpu_count()
         spectrograms = Parallel(n_jobs=num_cores)(delayed(generate_spectrograms_by_row)(row) for index, row in labeled_data.iterrows())
         
@@ -109,8 +113,6 @@ class Spectrogram:
         print('Time spent to generate spectrograms with parallelization: ', (end - begin).total_seconds(), 'seconds')
         print('Total number of spectrograms produced:', len(glob.glob(save_to_dir + '*')))
 
-        
-        
         
         
         

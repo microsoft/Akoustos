@@ -10,6 +10,7 @@ import os
 from statistics import median
 import cv2
 import warnings
+from math import ceil, floor
 
     
 class Load_Data:
@@ -34,7 +35,28 @@ class Load_Data:
             elif filename.endswith('csv'):
                 labeled_data = pd.read_csv(filename)
             all_labeled_data = all_labeled_data.append(labeled_data, ignore_index=True)
-    
+        all_labeled_data = all_labeled_data.sort_values(by=['Begin File', 'Begin Time (s)']).reset_index(drop=True)
+        
+        no_labeled_data = pd.DataFrame(columns = list(labeled_data))
+        for i in range(0, len(all_labeled_data) - 1, len(all_labeled_data.Category.unique())):
+            if all_labeled_data.loc[i, 'Begin File'] != all_labeled_data.loc[i + 1, 'Begin File']:
+                new_row = {'Begin Time (s)': 0,
+                           'End Time (s)': floor(all_labeled_data.loc[i, 'Begin Time (s)']),
+                           'Low Freq (Hz)': 0,
+                           'High Freq (Hz)': 0,
+                           'Begin File': all_labeled_data.loc[i, 'Begin File'],
+                           'Category': 'No Label'}
+            elif all_labeled_data.loc[i, 'Begin File'] == all_labeled_data.loc[i + 1, 'Begin File']:
+                new_row = {'Begin Time (s)': ceil(all_labeled_data.loc[i, 'End Time (s)']),
+                           'End Time (s)': floor(all_labeled_data.loc[i + 1, 'Begin Time (s)']),
+                           'Low Freq (Hz)': 0,
+                           'High Freq (Hz)': 0,
+                           'Begin File': all_labeled_data.loc[i, 'Begin File'],
+                           'Category': 'No Label'}
+            no_labeled_data = no_labeled_data.append(new_row, ignore_index=True)
+        
+        all_labeled_data = all_labeled_data.append(no_labeled_data, ignore_index=True)
+        
         summary = all_labeled_data.groupby(['Category']).size().reset_index(name='Count')
         summary['Percentage'] = round(100 * summary['Count']  / summary['Count'].sum(), 2)
         print(summary)
