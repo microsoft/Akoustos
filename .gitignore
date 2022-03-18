@@ -4,3 +4,4 @@ migrations
 aksrc
 .vscode
 api/.vscode/launch.json
+.DS_Store

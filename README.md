@@ -1,31 +1,12 @@
 ![header image](Akoustos.JPG)
 
-# Akoustos - Automated Bioacoustics Analysis Platform
+# Akoustos - Automated Bioacoustics Analysis Package
 
 
 ## Project Description
 
-With the goal of building an automated bioacoustics analysis platform, we hope it will:
-1. enable us to help broader audience in acoustics community working on problems that can be solved by similar methods;
-2. help conservation organizations and ecology practitioners to process audio recordings by detecting species presence more efficiently and more consistently with state-of-the-art machine learning techniques.
+This package provides an automated way to classify sound events. It includes the function of binary classification and multi-class classification.
 
-The near-term plan is to focus on automated sound detection and species classification tasks, using either binary, multi-class, or multi-label multi-class models. 
-
-
-
-## Collaborators & Contributors
-1. [Nowacek Acoustics and Engineering Lab](https://sites.nicholas.duke.edu/nowacek/) from Duke University
-2. [Conservation X Lab](https://conservationxlabs.com/)
-3. [Center for Conservation Bioacoustics](https://www.birds.cornell.edu/ccb/) from Cornell University
-4. [Kitzes Lab](https://www.kitzeslab.org/) from University of Pittsburgh
-5. [Meridian](https://meridian.cs.dal.ca/)
-6. [Rainforest Connection](https://www.rfcx.org/)
-7. [AviaNZ](https://www.avianz.net/)
-8. [Orcasound](http://www.orcasound.net/portfolio/ai-for-orcas-open-bioacoustic-data-science/)
-9. [Vulcan](https://vulcan.com/)
-10. [NOAA](https://www.noaa.gov/)
-
-... and more
 
 ## Resources & Links
 Relevant bioacoustics platforms & packages
@@ -40,7 +21,16 @@ Relevant bioacoustics platforms & packages
 9. [Ishmael](http://bioacoustics.us/ishmael.html)
 10. [BTO Acoustic Pipeline](https://www.ctbto.org/specials/vdec/)
 
-... and more
+
+## Setup
+
+1. Install Requirements
+
+```
+pip install -r requirements.txt
+```
+
+2. Use the sample notebook located [here](src/Akoustos.ipynb) to test.
 
 ## Contributing
 
@@ -63,14 +53,3 @@ trademarks or logos is subject to and must follow
 [Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks/usage/general).
 Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship.
 Any use of third-party trademarks or logos are subject to those third-party's policies.
-
-
-## Running the codeofconduct
-
-In this repo we included a sample notebook with calls to the code and their outputs to illustrate how it works. In order to run it, just install the dependencies by running:
-
-```
-pip install -r requirements.txt
-```
-
-After all runs, you should be able to run the code. This applies for running the notebook or using the template code in a different project, dependencies must be added.
