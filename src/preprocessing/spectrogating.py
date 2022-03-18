@@ -1,3 +1,8 @@
+'''
+Copyright (c) Microsoft Corporation. All rights reserved.
+Licensed under the MIT License.
+'''
+
 import librosa
 import numpy as np
 import matplotlib.pyplot as plt

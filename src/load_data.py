@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
-""" labeled_data.py: Utilities for dealing with labeled data
-"""
+
+'''
+Copyright (c) Microsoft Corporation. All rights reserved.
+Licensed under the MIT License.
+'''
 
 from datetime import datetime
 import glob
@@ -14,54 +17,55 @@ from math import ceil, floor
 from joblib import Parallel, delayed
 import multiprocessing
 from multiprocessing import Pool
-
-
-from src.audio import Audio
-from src.preprocessing import speechproc
-from src.preprocessing import spectrogating
+#from audio import Audio
+from preprocessing import speechproc
+from preprocessing import spectrogating
 from copy import deepcopy
 from scipy.signal import lfilter
     
-
 class Load_Data:
     
     def audio_filenames(directory):
         begin = datetime.now()
         
-        audio_filenames = glob.glob(directory + '*')
+        audio_filenames = glob.glob(directory + '*.flac') + glob.glob(directory + '*.wav')
         
         end = datetime.now()
         print('Number of audio files:', len(audio_filenames))  
-        print('Time spent to upload audio files: ', (end - begin).total_seconds(), 'seconds')
-        
+        print('Time spent to load audio files: ', (end - begin).total_seconds(), 'seconds')
         return audio_filenames
 
 
-    def labeled_data(labeled_data_dir, audio_dir):
+    def labeled_data(labeled_data_dir):
         begin = datetime.now()
         
-        filenames = glob.glob(labeled_data_dir + '*')
+        filenames = glob.glob(labeled_data_dir + '*.xlsx') + glob.glob(labeled_data_dir + '*.csv') + glob.glob(labeled_data_dir + '*.txt') 
         all_labeled_data = pd.DataFrame()
         for filename in filenames:
             if filename.endswith('xlsx'):
                 labeled_data = pd.read_excel(filename)
             elif filename.endswith('csv'):
                 labeled_data = pd.read_csv(filename)
+            elif filename.endswith('txt'):
+                labeled_data = pd.read_csv(filename, sep='\t')
             all_labeled_data = all_labeled_data.append(labeled_data, ignore_index=True)
-        all_labeled_data = all_labeled_data.sort_values(by=['Begin File', 'Begin Time (s)']).reset_index(drop=True)
         
+        if len(all_labeled_data) == 0:
+            print("No data found in {0}".format(labeled_data_dir))
+            return None
+        
+        all_labeled_data.drop_duplicates(inplace=True)
+        all_labeled_data = all_labeled_data.sort_values(by=['Begin File', 'Begin Time (s)']).reset_index(drop=True)
         
         summary = all_labeled_data.groupby(['Category']).size().reset_index(name='Count')
         summary['Percentage'] = round(100 * summary['Count']  / summary['Count'].sum(), 2)
         print(summary)
-        
+        print(labeled_data_dir)
         end = datetime.now()
-        print('Time spent to upload labeled data: ', (end - begin).total_seconds(), 'seconds')
+        print('Time spent to load labels: ', (end - begin).total_seconds(), 'seconds')
         
         return all_labeled_data
         
-        
-
     def labeled_data_with_NoSoundEvent(labeled_data_dir, audio_dir):
         begin = datetime.now()
         
@@ -74,27 +78,6 @@ class Load_Data:
                 labeled_data = pd.read_csv(filename)
             all_labeled_data = all_labeled_data.append(labeled_data, ignore_index=True)
         all_labeled_data = all_labeled_data.sort_values(by=['Begin File', 'Begin Time (s)']).reset_index(drop=True)
-        
-        ### no_labeled_data
-        #no_labeled_data = pd.DataFrame(columns = list(labeled_data))
-        #for i in range(0, len(all_labeled_data) - 1, len(all_labeled_data.Category.unique())):
-        #    if all_labeled_data.loc[i, 'Begin File'] != all_labeled_data.loc[i + 1, 'Begin File']:
-        #        new_row = {'Begin Time (s)': 0,
-        #                   'End Time (s)': floor(all_labeled_data.loc[i, 'Begin Time (s)']),
-        #                   'Low Freq (Hz)': 0,
-        #                   'High Freq (Hz)': 0,
-        #                   'Begin File': all_labeled_data.loc[i, 'Begin File'],
-        #                   'Category': 'No Label'}
-        #    elif all_labeled_data.loc[i, 'Begin File'] == all_labeled_data.loc[i + 1, 'Begin File']:
-        #        new_row = {'Begin Time (s)': ceil(all_labeled_data.loc[i, 'End Time (s)']),
-        #                   'End Time (s)': floor(all_labeled_data.loc[i + 1, 'Begin Time (s)']),
-        #                   'Low Freq (Hz)': 0,
-        #                   'High Freq (Hz)': 0,
-        #                   'Begin File': all_labeled_data.loc[i, 'Begin File'],
-        #                   'Category': 'No Label'}
-        #    no_labeled_data = no_labeled_data.append(new_row, ignore_index=True)
-        #all_labeled_data = all_labeled_data.append(no_labeled_data, ignore_index=True)
-        
         
         ### no_sound_event_data
         no_sound_event_data = pd.DataFrame(columns = list(all_labeled_data))
@@ -160,12 +143,6 @@ class Load_Data:
         print('Time spent to preprocess data: ', (end - begin).total_seconds(), 'seconds')
         
         return all_labeled_data
-
-    
-    
-    
-    
-    
         
     def labeled_data_with_NoSoundEvent_parallel(labeled_data_dir, audio_dir):
         ###################
@@ -183,27 +160,6 @@ class Load_Data:
                 labeled_data = pd.read_csv(filename)
             all_labeled_data = all_labeled_data.append(labeled_data, ignore_index=True)
         all_labeled_data = all_labeled_data.sort_values(by=['Begin File', 'Begin Time (s)']).reset_index(drop=True)
-        
-        ### no_labeled_data
-        #no_labeled_data = pd.DataFrame(columns = list(labeled_data))
-        #for i in range(0, len(all_labeled_data) - 1, len(all_labeled_data.Category.unique())):
-        #    if all_labeled_data.loc[i, 'Begin File'] != all_labeled_data.loc[i + 1, 'Begin File']:
-        #        new_row = {'Begin Time (s)': 0,
-        #                   'End Time (s)': floor(all_labeled_data.loc[i, 'Begin Time (s)']),
-        #                   'Low Freq (Hz)': 0,
-        #                   'High Freq (Hz)': 0,
-        #                   'Begin File': all_labeled_data.loc[i, 'Begin File'],
-        #                   'Category': 'No Label'}
-        #    elif all_labeled_data.loc[i, 'Begin File'] == all_labeled_data.loc[i + 1, 'Begin File']:
-        #        new_row = {'Begin Time (s)': ceil(all_labeled_data.loc[i, 'End Time (s)']),
-        #                   'End Time (s)': floor(all_labeled_data.loc[i + 1, 'Begin Time (s)']),
-        #                   'Low Freq (Hz)': 0,
-        #                   'High Freq (Hz)': 0,
-        #                   'Begin File': all_labeled_data.loc[i, 'Begin File'],
-        #                   'Category': 'No Label'}
-        #    no_labeled_data = no_labeled_data.append(new_row, ignore_index=True)
-        #all_labeled_data = all_labeled_data.append(no_labeled_data, ignore_index=True)
-        
         
         ### no_sound_event_data
         annotation_base_audio_filenames = list(all_labeled_data['Begin File'].unique())
@@ -256,8 +212,6 @@ class Load_Data:
                 df = df.append(new_row, ignore_index=True)
             return df
             
-                
-            
         num_cores = multiprocessing.cpu_count()
         with Pool(processes=num_cores) as pool:
             df_list = pool.map(sound_event_detection_for_single_audio_file, annotation_base_audio_filenames)
@@ -277,12 +231,6 @@ class Load_Data:
         print('Time spent to preprocess data: ', (end - begin).total_seconds(), 'seconds')
         
         return all_labeled_data
-
-    
-    
-    
-    
-    
 
 
     def load_spectrograms(directory, shape=(224, 224)):

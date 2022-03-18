@@ -1,4 +1,9 @@
 #!/usr/bin/env python3
+'''
+Copyright (c) Microsoft Corporation. All rights reserved.
+Licensed under the MIT License.
+'''
+
 """ spectrogram.py: Utilities for data pre-processing of binary classification
 """
 
@@ -14,6 +19,10 @@ class Data_Split:
             raise ValueError("The total percentage of training/validation/testing datasets need to be 100%.")
         
         spectrogram_filenames = sorted(glob.glob(spectrogram_dir + '*.png'))
+        if len(spectrogram_filenames) == 0 or spectrogram_filenames is None:
+            print("There are no spectrograms in the pectograms directory: {0}".format(spectrogram_dir))
+            return None;
+        
         if include_no_label_category == False:
             spectrogram_filenames = [filename for filename in spectrogram_filenames if 'No Label' not in filename]
         
@@ -21,11 +30,11 @@ class Data_Split:
         df['filename'] = spectrogram_filenames
         
         if len(categories) == 1:
-            df['label'] = [1 if filename.replace('.png', '').split('_')[-1] == categories[0] else 0 for filename in spectrogram_filenames]
+            df['label'] = [1 if filename.replace('.png', '').split('-')[-1] == categories[0] else 0 for filename in spectrogram_filenames]
         elif len(categories) > 1:
-            df['label'] = [filename.replace('.png', '').split('_')[-1] if filename.replace('.png', '').split('_')[-1] in categories else '-9999' for filename in spectrogram_filenames]
+            df['label'] = [filename.replace('.png', '').split('-')[-1] if filename.replace('.png', '').split('-')[-1] in categories else '-9999' for filename in spectrogram_filenames]
         else:
-            df['label'] = [filename.replace('.png', '').split('_')[-1] for filename in spectrogram_filenames]
+            df['label'] = [filename.replace('.png', '').split('-')[-1] for filename in spectrogram_filenames]
         
         if by == 'random':
             df_index = list(range(len(df)))

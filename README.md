@@ -63,3 +63,14 @@ trademarks or logos is subject to and must follow
 [Microsoft's Trademark & Brand Guidelines](https://www.microsoft.com/en-us/legal/intellectualproperty/trademarks/usage/general).
 Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship.
 Any use of third-party trademarks or logos are subject to those third-party's policies.
+
+
+## Running the codeofconduct
+
+In this repo we included a sample notebook with calls to the code and their outputs to illustrate how it works. In order to run it, just install the dependencies by running:
+
+```
+pip install -r requirements.txt
+```
+
+After all runs, you should be able to run the code. This applies for running the notebook or using the template code in a different project, dependencies must be added.

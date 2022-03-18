@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
+'''
+Copyright (c) Microsoft Corporation. All rights reserved.
+Licensed under the MIT License.
+'''
+
 """ binary_classification.py: build binary classification models
 """
 
-
+import glob
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -16,13 +21,14 @@ from torchvision import utils
 import torchvision.transforms as transforms
 from torchvision import datasets, models
 
-import copy
+from copy import deepcopy
 import numpy as np
 import pandas as pd
 import seaborn as sns
-import matplotlib.pyplot as plt
 from PIL import Image
-
+import matplotlib.pyplot as plt
+from matplotlib import image
+from pylab import *
 
 from sklearn.metrics import classification_report, confusion_matrix
 
@@ -37,15 +43,14 @@ class BaseDataset(Dataset):
         return len(self.split)
     
     def __getitem__(self,index):
-        image = Image.open(self.split.loc[index, 'filename']).convert('RGB')
+        filename = self.split.loc[index, 'filename']
+        image = Image.open(filename).convert('RGB')
         label = self.split.loc[index, 'label']
         
         if self.transform is not None:
             image = self.transform(image)
-        return image, label
+        return filename, image, label
     
-    
-
 def load_dataset(data, batch_size):
     mean = [0.485, 0.456, 0.406]
     std = [0.229, 0.224, 0.225]
@@ -53,9 +58,6 @@ def load_dataset(data, batch_size):
     data_transforms = {
         'train': transforms.Compose([transforms.RandomGrayscale(p=0.1),
                                       transforms.RandomRotation(10),
-                                      #transforms.RandomResizedCrop((224, 224), scale=(0.05, 0.95), ratio=(0.9, 1.1)),
-                                      #transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.2),
-                                      #transforms.GaussianBlur(kernel_size=(5, 9), sigma=(0.1, 2.0)),
                                       transforms.Resize((224, 224)),
                                       transforms.ToTensor(),
                                       transforms.Normalize(mean, std),
@@ -111,12 +113,11 @@ class Customized_CNN(nn.Module):
 
     
     
-class binary_classification_models():
+class Binary_Classification_Models():
     
-    def train_model(data, model_name, batch_size = 32, pretrained = True, optimizer = 'Adam', learning_rate = 0.0001, lr_decay = True, num_epochs = 25):
+    def train_model(data, model_name, model_version, model_dir, batch_size = 32, pretrained = True, optimizer = 'Adam', learning_rate = 0.0001, lr_decay = True, num_epochs = 25):
         
         train_data, val_data, test_data, train_loader, val_loader, test_loader = load_dataset(data, batch_size = batch_size)
-        print()
         
         print('Please choose one model from the available models: Customized_CNN, Resnet18, Resnet34, Resnet50, Resnet101, Resnet152, Alexnet, VGG11, VGG13, VGG16, VGG19, Densenet121, Densenet169, Densenet201, Squeezenet1_0.')
 
@@ -178,7 +179,7 @@ class binary_classification_models():
     
         exp_lr_scheduler = lr_scheduler.StepLR(optimizer_ft, step_size=10, gamma=0.1)
 
-        best_model_wts = copy.deepcopy(model.state_dict())
+        best_model_wts = deepcopy(model.state_dict())
         val_best_acc = 0.0
         
         
@@ -197,7 +198,7 @@ class binary_classification_models():
             model.train()  # Set model to training mode
             running_loss = 0.0
             running_corrects = 0
-            for inputs, labels in train_loader:
+            for filename, inputs, labels in train_loader:
                 inputs = inputs.to(device)
                 labels = labels.to(device)
                 optimizer_ft.zero_grad()
@@ -222,7 +223,7 @@ class binary_classification_models():
             model.eval()   # Set model to evaluate mode
             running_loss = 0.0
             running_corrects = 0
-            for inputs, labels in val_loader:
+            for filename, inputs, labels in val_loader:
                 inputs = inputs.to(device)
                 labels = labels.to(device)
                 optimizer_ft.zero_grad()
@@ -240,7 +241,7 @@ class binary_classification_models():
             val_epoch_acc = running_corrects / len(val_data)
             if val_epoch_acc > val_best_acc:
                 val_best_acc = val_epoch_acc
-                best_model_wts = copy.deepcopy(model.state_dict())
+                best_model_wts = deepcopy(model.state_dict())
             
             ###### results summary for each epoch
             loss_stats['train'].append(train_epoch_loss)
@@ -260,9 +261,11 @@ class binary_classification_models():
         sns.lineplot(data=train_val_loss_df, x = "epochs", y="value", hue="variable", ax=axes[1]).set_title('Train-Val Loss/Epoch')
 
         ###### Model scoring on testset
+        filenames = []
         y_pred = []
         y_true = []
-        for inputs, labels in test_loader:
+        for filename, inputs, labels in test_loader:
+            filenames += filename
             inputs = inputs.to(device)
             labels = labels.to(device)
             if model_name != 'Customized_CNN':
@@ -277,9 +280,175 @@ class binary_classification_models():
         print(classification_report(y_true, y_pred))
         print('Confusion matrix on testset:')
         print(confusion_matrix(y_true, y_pred))
-    
+
+        ###### plot examples of correct & incorrect classifications for each category
+        from collections import defaultdict
+        label_true_pred_mapping = defaultdict(list)
+        for i in range(len(y_true)):
+            label_true_pred_mapping[y_true[i]].append((i, y_pred[i]))
+        
+
+        def DrawPics(category, sample_size):
+            
+            category_correct_classification = [i for (i, y_pred) in label_true_pred_mapping[category] if y_pred == category][:sample_size]
+            category_incorrect_classification = [i for (i, y_pred) in label_true_pred_mapping[category] if y_pred != category][:sample_size]
+            fig=plt.figure(figsize=(20, 5))
+            for i in range(len(category_correct_classification)):
+                index = category_correct_classification[i]
+                subplot = fig.add_subplot(1, sample_size, i+1)
+                axis("off")
+                img = image.imread(test_data[index][0])
+                plt.imshow(img)
+                subplot.title.set_text('correct classification: ' + str(category))
+            fig=plt.figure(figsize=(20, 5))
+            for i in range(len(category_incorrect_classification)):
+                index = category_incorrect_classification[i]
+                subplot = fig.add_subplot(1, sample_size, i+1)
+                axis("off")
+                img = image.imread(test_data[index][0])
+                plt.imshow(img)
+                subplot.title.set_text('incorrect classification: ' + str(category))
+
+        for category in [0,1]:
+            DrawPics(category, sample_size = 5)
+            
+        if model_version:
+            torch.save(model.state_dict(), model_dir + model_version + '-binary_classification_model-' + model_name + '.pth')
+        else:
+            torch.save(model.state_dict(), model_dir + 'binary_classification_model-' + model_name + '.pth')
+            
         return model    
     
+
     
-def score_NewData():
-    """ TODO """
+############################################################################
+######################### score for new dataset ############################
+############################################################################
+class Dataset_to_Score(Dataset):
+    def __init__(self, df, transform = None):
+        super().__init__()
+        self.df = df.reset_index(drop=True)
+        self.transform = transform
+        
+    def __len__(self):
+        return len(self.df)
+    
+    def __getitem__(self,index):
+        filename = self.df.loc[index, 'filename']
+        image = Image.open(filename).convert('RGB')
+        
+        if self.transform is not None:
+            image = self.transform(image)
+        return filename, image
+
+
+class Binary_Classification_Scoring():
+    
+    def load_dataset_to_score(self, data, batch_size):
+        mean = [0.485, 0.456, 0.406]
+        std = [0.229, 0.224, 0.225]
+            
+        data_transforms = {
+            'to_score': transforms.Compose([transforms.Resize((224, 224)),
+                                            transforms.ToTensor(),
+                                            transforms.Normalize(mean, std),
+                                            ])
+        }
+            
+        data_to_score = Dataset_to_Score(data, data_transforms['to_score'])
+        data_to_score_loader = DataLoader(dataset=data_to_score, batch_size=batch_size, shuffle=False, drop_last=False)
+            
+        return data_to_score_loader
+
+    def score_new_dataset(self, spectrogram_dir_to_score, model_dir, saved_model):
+        print('Scoring dataset...')
+        if len(saved_model) == 0 or saved_model is None:
+            print("Please provide a model path for the model you wish to use.")
+            return
+
+        spectrogram_filenames_to_score = glob.glob(spectrogram_dir_to_score + '*')
+        spectrogram_filenames_to_score = pd.DataFrame(spectrogram_filenames_to_score, columns =['filename'])
+        data_to_score_loader = self.load_dataset_to_score(spectrogram_filenames_to_score, 32)
+
+        output = pd.DataFrame(columns = ['Begin Time (s)', 'End Time (s)', 'Low Freq (Hz)', 'High Freq (Hz)', 'Begin File', 'Predicted_Category', 'Predicted_Probability'])
+        
+        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        model_name = saved_model.split('-')[-1].split('.')[0]
+        
+        num_classes = 2
+        
+        if model_name == 'Customized_CNN':
+            model = Customized_CNN()
+        elif model_name == 'Resnet18':
+            model = models.resnet18()
+            model.classifier = nn.Linear(1024, num_classes)
+        elif model_name == 'Resnet34':
+            model = models.resnet34()
+            model.classifier = nn.Linear(1024, num_classes)           
+        elif model_name == 'Resnet50':
+            model = models.resnet50()
+            model.classifier = nn.Linear(1024, num_classes)
+        elif model_name == 'Resnet101':
+            model = models.resnet101()
+            model.classifier = nn.Linear(1024, num_classes)
+        elif model_name == 'Resnet152':
+            model = models.resnet152()
+            model.classifier = nn.Linear(1024, num_classes)
+        elif model_name == 'Alexnet':
+            model = models.alexnet()
+            model.classifier[6] = nn.Linear(4096, num_classes)
+        elif model_name == 'VGG11':
+            model = models.vgg11()
+            model.classifier[6] = nn.Linear(4096, num_classes)
+        elif model_name == 'VGG13':
+            model = models.vgg13()
+            model.classifier[6] = nn.Linear(4096, num_classes)
+        elif model_name == 'VGG16':
+            model = models.vgg16()
+            model.classifier[6] = nn.Linear(4096, num_classes)
+        elif model_name == 'VGG19':
+            model = models.vgg19()
+            model.classifier[6] = nn.Linear(4096, num_classes)
+        elif model_name == 'Densenet121':
+            model = models.densenet121()
+            model.classifier = nn.Linear(1024, num_classes)
+        elif model_name == 'Densenet169':
+            model = models.densenet121()
+            model.classifier = nn.Linear(1024, num_classes)
+        elif model_name == 'Densenet201':
+            model = models.densenet121()
+            model.classifier = nn.Linear(1024, num_classes)
+        elif model_name == 'Squeezenet1_0':
+            model = models.squeezenet1_0()
+            model.classifier[1] = nn.Conv2d(512, num_classes, kernel_size=(1,1), stride=(1,1))
+
+        model.load_state_dict(torch.load(model_dir + saved_model, map_location=device))
+        model.to(device)
+
+        filenames = []
+        y_pred = []
+        pred_probs = []
+        
+        for filename, inputs in data_to_score_loader:
+            filenames += filename
+            inputs = inputs.to(device)
+            if model_name != 'Customized_CNN':
+                outputs = model(inputs)
+            elif model_name == 'Customized_CNN':
+                outputs = model(inputs).squeeze()
+            _, preds = torch.max(outputs, 1)
+            pred_prob = [x[1] for x in F.softmax(outputs, dim=1).cpu().tolist()]
+            y_pred += preds.cpu().tolist()
+            pred_probs += pred_prob
+            
+        audio_filenames = [filename.split('/')[-1].split('-')[0] for filename in filenames]
+        begin_times = [filename.split('-')[1] for filename in filenames]
+        end_times = [filename.split('-')[2] for filename in filenames]
+        output['Begin Time (s)'] = begin_times
+        output['End Time (s)'] = end_times
+        output['Begin File'] = audio_filenames
+        output['Predicted_Category'] = y_pred
+        output['Predicted_Probability'] = pred_probs
+        print('Scoring dataset done!')
+
+        return output
