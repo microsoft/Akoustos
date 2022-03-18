@@ -1,0 +1,6 @@
+venv
+__pycache__
+migrations
+aksrc
+.vscode
+api/.vscode/launch.json
